@@ -1,0 +1,23 @@
+#!/bin/bash
+export PGPASSWORD="password"
+databases=(
+    first_db
+    second_db
+#   ...    
+)
+
+kubectl port-forward svc/some_service 5433:5432 -n <namespace> &
+# ID последнего запущенного процесса (port-forward)
+PF_PID=$!
+sleep 5
+
+for db in "${databases[@]}"; do
+    echo "Processing database: $db"
+    pg_dump -h localhost -p 5433 -U postgres -Fc "$db" > "$db.backup"
+    pg_restore --clean -h localhost -p 5432 -U postgres -d "$db" -c --if-exists < "$db.backup"
+done
+# Очистка: останавливаем port-forward
+kill $PF_PID
+unset PGPASSWORD
+
+
