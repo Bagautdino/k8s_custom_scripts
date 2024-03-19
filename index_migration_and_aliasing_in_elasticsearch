@@ -1,0 +1,22 @@
+# Create a new index named 'some_service_0.0.1'
+curl -X PUT "localhost:9200/some_service_0.0.1" -H 'Content-Type: application/json'
+
+# Copy data from 'some_service' to a new index 'some_service_next' (Reindex Data)
+curl -H 'Content-Type: application/json' -X POST http://localhost:9200/_reindex -d'
+{
+  "source": {
+    "index": "some_service"
+  },
+  "dest": {
+    "index": "some_service_next"
+  }
+}'
+
+# Remove the old index and point the 'some_service' alias to the new index (Update Aliases)
+curl -X POST "localhost:9200/_aliases" -H 'Content-Type: application/json' -d'
+{
+  "actions": [
+    { "remove_index": { "index": "some_service" } },
+    { "add": { "index": "some_service_next", "alias": "some_service" } }
+  ]
+}'
