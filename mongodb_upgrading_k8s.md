@@ -68,3 +68,9 @@ kubectl port-forward pod/<pod-name> 20000:27017 -n <namespace>
 ```bash
 mongorestore --archive=<database-name> --drop -u root --authenticationDatabase admin --verbose=5 --port=20000
 ```
+
+## Шаг 5: Целевая мажорная версия достигнута, теперь обновляем минорную
+
+Ставим самую последнюю минорную версию.
+Если возникают ошибки ставим ниже.
+
